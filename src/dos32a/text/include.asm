@@ -37,10 +37,11 @@
 ;
 ;
 
-cr	equ 0Dh, 0Ah
-cre	equ 0Dh, 0Ah ,0
+cr	equ '0Dh, 0Ah'
+cre	equ '0Dh, 0Ah ,0'
 offs	equ offset
 bptr	equ byte ptr
 wptr	equ word ptr
 dptr	equ dword ptr
-fptr	equ fword ptr
+;fptr	equ fword ptr
+%define fptr fword ptr

@@ -253,9 +253,12 @@ dfB_str	db 'NOWARN'		; disable particular warning		(NUM)
 dfC_str db 'NOC'		; disable copyright banner		--
 
 	Align 4
-@area1_db label byte
-@area1_dw label word
-@area1_dd label dword
+;@area1_db label byte
+;@area1_dw label word
+;@area1_dd label dword
+area1_db: resb 1
+area1_dw: resw 1
+area1_dd: resd 1
 
 
 ; INIT errors		00xx

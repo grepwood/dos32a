@@ -42,7 +42,7 @@ BUILDING_CLIENT = 1
 
 ;*****************************************************************************
 ; DOS/32 Advanced DOS Extender master Client file, implements program entry
-; point and includes the necessary client files from .\TEXT\CLIENT\.
+; point and includes the necessary client files from ./TEXT/CLIENT/.
 ;
 ;*****************************************************************************
 
@@ -62,7 +62,7 @@ extrn	pm32_info	:far
 extrn	pm32_init	:far
 extrn	pm32_data	:byte
 
-include	TEXT\include.asm
+include	TEXT/include.asm
 
 
 		.386p
@@ -118,7 +118,7 @@ dw	0200h		; DOS INT 21h buffer in low memory (in para)	/8 KB
 dw	090Ch		; Internal Version of DOS/32A: db low,high
 dw	0000h		; Reserved (v7.0+)
 ;-----------------------------------------------------------------------------
-include	TEXT\oemtitle.asm
+include	TEXT/oemtitle.asm
 _ID32	ends
 
 
@@ -136,13 +136,13 @@ _TEXT16	segment para public use16 'CODE2'
 
 @text16_beg	label byte
 
-include	TEXT\CLIENT\config.asm
-include	TEXT\CLIENT\strings.asm
-include	TEXT\CLIENT\misc.asm
-include	TEXT\CLIENT\debug.asm
-include	TEXT\CLIENT\int10h.asm
-include	TEXT\CLIENT\int21h.asm
-include	TEXT\CLIENT\int33h.asm
+include	TEXT/CLIENT/config.asm
+include	TEXT/CLIENT/strings.asm
+include	TEXT/CLIENT/misc.asm
+include	TEXT/CLIENT/debug.asm
+include	TEXT/CLIENT/int10h.asm
+include	TEXT/CLIENT/int21h.asm
+include	TEXT/CLIENT/int33h.asm
 include	loader.asm
 include	loadlc.asm
 include	loadpe.asm
@@ -453,14 +453,14 @@ remove_kernel:
 ;=============================================================================
 ; DATA
 
-include	TEXT\CLIENT\data.asm
+include	TEXT/CLIENT/data.asm
 
 
 ;=============================================================================
 ; BETA test code
 
 If EXEC_TYPE eq 2
-include	TEXT\testbeta.asm
+include	TEXT/testbeta.asm
 Endif
 
 	Align 16

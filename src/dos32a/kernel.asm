@@ -37,46 +37,47 @@
 ;
 ;
 
-BUILDING_KERNEL = 1
-BUILDING_CLIENT = 0
+%define BUILDING_KERNEL  1
+%define BUILDING_CLIENT  0
 
 ;*****************************************************************************
 ; DOS/32 Advanced DOS Extender master Kernel file, includes kernel definitions
-; data structures, and files from .\TEXT\KERNEL\ implementing the kernel.
+; data structures, and files from ./text/kernel/ implementing the kernel.
 ;
 ;	Created on:	Oct-30-1996
 ;
 ;*****************************************************************************
 
-		.386p
-		.387
-		LOCALS
-		NOJUMPS
+;		.386p;
+;		.387;
+;		LOCALS;
+;		NOJUMPS;
 
-SELCODE		= 08h			; KERNEL code selector
-SELDATA		= 10h			; KERNEL data selector
-SELZERO		= 18h			; ZERO data selector
-SELVCPITSS	= 20h			; TSS selector for VCPI
-SELVCPICODE	= 28h			; VCPI call code selector
-SELVCPICOD2	= 30h			; VCPI internal selector #2
-SELVCPICOD3	= 38h			; VCPI internal selector #3
-SELBIOSDATA	= 40h			; BIOS DATA Area 40h selector
-SELCALLBACK	= 48h			; Callback DS selector
+%define SELCODE		 08h			; KERNEL code selector
+%define SELDATA		 10h			; KERNEL data selector
+%define SELZERO		 18h			; ZERO data selector
+%define SELVCPITSS	 20h			; TSS selector for VCPI
+%define SELVCPICODE	 28h			; VCPI call code selector
+%define SELVCPICOD2	 30h			; VCPI internal selector #2
+%define SELVCPICOD3	 38h			; VCPI internal selector #3
+%define SELBIOSDATA	 40h			; BIOS DATA Area 40h selector
+%define SELCALLBACK	 48h			; Callback DS selector
 
-SYSSELECTORS	= 10			; number of system selectors in GDT
+%define SYSSELECTORS	 10			; number of system selectors in GDT
 
-INCLUDE	TEXT\include.asm
-PUBLIC	pm32_info
-PUBLIC	pm32_init
-PUBLIC	pm32_data
-PUBLIC	@kernel_beg
-PUBLIC	@kernel_end
+%include "text/include.asm"
+GLOBAL	pm32_info
+GLOBAL	pm32_init
+GLOBAL	pm32_data
+GLOBAL	@kernel_beg
+GLOBAL	@kernel_end
 
 
 _KERNEL	segment para public use16 'CODE1'
-	assume	cs:_KERNEL, ds:_KERNEL
+;	assume	cs:_KERNEL, ds:_KERNEL
 ;=============================================================================
-pm32_data	label byte	; data area 12 bytes
+;pm32_data	label byte	; data area 12 bytes
+pm32_data:	resb 12
 pm32_mode	db	-1	; mode bits:
 				;  bit0: 0=test DPMI/VCPI, 1=VCPI/DPMI
 				;  bit1: 0=exception control off, 1=on
@@ -178,7 +179,7 @@ callbackbase	equ @area1_dd+248h	;dd 0; base of real mode callbacks
 callbackseg	equ @area1_dw+24Ch	;dw 0; segment of callbacks
 irqcallbackptr	equ @area1_dw+250h	;dw 0; ptr to IRQ callback ESP buffer
 
-		evendata
+		align 2,db 0
 client_call	dw	0,0		; client's critical handler offset
 client_version	dw	0		; extender version
 kernel_code	dw	0		; kernel CS: segment
@@ -192,7 +193,7 @@ __reserved_1	db	0		; reserved
 A20_state	db	0		; old A20 gate state
 cpuidlvl	dd	0		; CPUID level
 
-		evendata
+		align 2,db 0
 codebase	dd	0		; _KERNEL linear address
 dpmiepmode	dd	0		; DPMI enter pmode addx
 
@@ -213,7 +214,7 @@ pmtormswrout	dd	offs v_pmtormsw	; addx of protected to real routine
 
 ;=============================================================================
 ;*** XMS DATA ***
-		evendata
+		align 2,db 0
 xms_call	dw	0,0		; XMS driver offset, segment
 xms_data	dd	0		; XMS 3.0 available memory
 xms_handle	dw	0		; memory handle
@@ -221,7 +222,7 @@ xms_handle	dw	0		; memory handle
 
 ;=============================================================================
 ;*** VCPI DATA ***
-		evendata		; VCPI structure, DO NOT MODIFY
+		align 2,db 0		; VCPI structure, DO NOT MODIFY
 vcpi_cr3	dd	0		; VCPI CR3 value for protected mode
 vcpi_gdtaddx	dd	offs gdtlimit	; linear addx of GDT limit and base
 vcpi_idtaddx	dd	offs idtlimit	; linear addx of IDT limit and base
@@ -239,8 +240,9 @@ vcpiswitchstack	dd	0		; VCPI temporary mode switch stack
 
 ;=============================================================================
 ;*** DPMI DATA ***
-		evendata
-int31h_cache	label word
+		align 2,db 0
+;int31h_cache	label word
+int31h_cache:	resw 2
 	dw	0EEFFh			; last DPMI function #
 	dw	int31h_EEFF		; last DPMI function target addr
 
@@ -251,29 +253,30 @@ int31h_cache	label word
 ;=============================================================================
 ; PROTECTED MODE INIT/EXIT CODE
 
-include	TEXT\KERNEL\detect.asm
-include	TEXT\KERNEL\init.asm
-include	TEXT\KERNEL\exit.asm
-include	TEXT\KERNEL\misc.asm
+%include	"text/kernel/detect.asm"
+;%include	"text/kernel/init.asm"
+;%include	"text/kernel/exit.asm"
+;%include	"text/kernel/misc.asm"
 
 
 ;=============================================================================
 ; PROTECTED MODE KERNEL CODE
 
-include	TEXT\KERNEL\mode.asm
-include	TEXT\KERNEL\intr.asm
-include	TEXT\KERNEL\int31h.asm
+;%include	"text/kernel/mode.asm"
+;%include	"text/kernel/intr.asm"
+;%include	"text/kernel/int31h.asm"
 
 
 ;=============================================================================
 ; BETA test code
 
-If EXEC_TYPE eq 2
-include	TEXT\testbeta.asm
-Endif
+%if EXEC_TYPE == 2
+;%include	"text/testbeta.asm"
+%endif
 
 	Align 16
-@kernel_end	label byte
+;@kernel_end	label byte
+@kernel_end:	resb 1
 
-_KERNEL      ends
+;_KERNEL      ends
 end
