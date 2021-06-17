@@ -1,20 +1,11 @@
-DOS/32 Advanced DOS Extender, version 9.1.2+
+DOS/32 Advanced DOS Extender
 
-Contents:
-  1.0 - Synopsis
-  2.0 - System Requirements
-  3.0 - Release Notes
-  4.0 - FAQ
-
-
-
-
-1.0 - Synopsis
+Synopsis
 ==============
 This is a DOS extender which is mostly a suitable drop-in replacement
 for DOS4GW. It allows software to run in protected mode while in DOS.
 
-2.0 - System Requirements
+System requirements
 =========================
 I don't know. DOS32A SDK claims the following is a minimum:
 - IBM PC compatible computer
@@ -38,11 +29,11 @@ probably the requirements to build DOS32A:
 What is Windows doing here is anyone's guess. We don't need no botnet to build
 this thing.
 
-3.0 - Release Notes
+Release notes
 ===================
 We have commit logs for that.
 
-4.0 - FAQ
+FAQ
 =========
 Q: What's new?
 A: Check the commit logs.
