@@ -5,10 +5,10 @@ else
 endif
 
 kernel.obj:
-	nasm -DEXEC_TYPE=$(EXEC_TYPE) -f obj kernel.asm -o kernel.o
+	nasm -DEXEC_TYPE=$(EXEC_TYPE) -f obj kernel.asm -o kernel.o -l kernel.lst
 
 dos32a.obj:
-	nasm -DEXEC_TYPE=$(EXEC_TYPE) -f obj dos32a.asm -o dos32a.o
+	nasm -DEXEC_TYPE=$(EXEC_TYPE) -f obj dos32a.asm -o dos32a.o -l dos32a.lst
 
 dos32a.exe:
 	wcl -zq -lr -fm=dos32a -fe=dos32a dos32a.o kernel.o
