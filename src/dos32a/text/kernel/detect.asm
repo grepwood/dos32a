@@ -68,9 +68,9 @@ area1_dd: resd 1
 
 pm32_info:
 	cld
-	push	ds es			; preserve registers
-	push	cs cs			; DS = CS (_KERNEL)
-	pop	ds es
+	push	ds, es			; preserve registers
+	push	cs, cs			; DS = CS (_KERNEL)
+	pop	ds, es
 
 	call	cpu_detect		; get processor type
 	cmp	al,3			; check if processor is 80386+
@@ -100,11 +100,11 @@ pm32_info:
 	int	21h			; HIMEM.SYS bug fix
 	mov	ah,88h
 	xor	bx,bx
-	call	dptr xms_call		; get XMS v3 free mem in KB
+	call	dptr, xms_call		; get XMS v3 free mem in KB
 	test	bl,bl			; if no XMS v3, use v2
 	jz	@@xms1
 	mov	ah,08h
-	call	dptr xms_call		; get XMS v2 free mem in KB
+	call	dptr, xms_call		; get XMS v2 free mem in KB
 	movzx	eax,ax
 @@xms1:	mov	xms_data,eax
 	pop	es
@@ -154,10 +154,10 @@ pm32_info:
 	mov	cl,cputype
 	mov	pmodetype,ch		; store pmode type
 
-	mov	dx,offs @kernel_end - offs @kernel_beg
-	mov	di,offs @kernel_beg
+	mov	dx, @kernel_end - @kernel_beg
+	mov	di, @kernel_beg
 
-@@exit:	pop	es ds			; restore other registers
+@@exit:	pop	es, ds			; restore other registers
 	retf				; return
 
 @@fail:	stc				; carry set, failed
@@ -183,8 +183,8 @@ pm32_info:
 	test	bl,1			; is DPMI 32bit?
 	jz	@@fail			; if no, fail
 
-	mov	wptr dpmiepmode[0],di	; store DPMI initial mode switch addx
-	mov	wptr dpmiepmode[2],es
+	mov	wptr, dpmiepmode[0],di	; store DPMI initial mode switch addx
+	mov	wptr, dpmiepmode[2],es
 	mov	bx,si			; BX = number of paragraphs needed
 	mov	ch,3			; pmode type is 3 (DPMI)
 	jmp	@@done			; go to done ok
@@ -239,7 +239,10 @@ pm32_info:
 @@v1:	mov	ax,0DE03h
 	int	67h			; EDX=free VCPI pages
 
-	push	es ecx edx di
+	push	es
+	push	ecx
+	push	edx
+	push	di
 	test	pm32_mode,00000100b	; check if VCPI smart pagetable alloc
 	jz	@@v1a			; no, use standard detection
 
@@ -267,7 +270,10 @@ pm32_info:
 	jmp	@@v1b
 
 @@v1a:	xor	eax,eax
-@@v1b:	pop	di edx ecx es
+@@v1b:	pop	di
+	pop	edx
+	pop	ecx
+	pop	es
 
 	mov	esi,ecx			; ECX=XMS free mem,EDX=VCPI free pages
 	shr	esi,2			; ESI=XMS_freemem/4 (to match 4Kpages)
@@ -280,7 +286,7 @@ pm32_info:
 
 	mov	dx,di
 	mov	ah,0Ah			; free what was allocated
-	call	dptr xms_call
+	call	dptr, xms_call
 @@v2:	movzx	ax,pm32_maxpages
 	cmp	ax,si
 	jbe	@@v3
@@ -370,7 +376,7 @@ cpu_detect:				; detect: 286, 386, 486, 586 etc
 	ret
 
 fpu_detect:				; detect 8087, 287, 387, 487 etc
-	push	large 0
+	push	dword 0
 	mov	bp,sp
 	fninit
 	fnstcw	wptr [bp+2]
@@ -393,9 +399,9 @@ fpu_detect:				; detect 8087, 287, 387, 487 etc
 	wait
 	fldz
 	wait
-	fdivp	st(1),st
+	fdivp	st1,st
 	wait
-	fld	st(0)
+	fld	st0
 	wait
 	fchs
 	wait
